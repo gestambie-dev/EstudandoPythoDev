@@ -1,15 +1,55 @@
-#Mini Projeto
+#Mini Projeto do DIA 6
+
+#Função de validação pH
+def validar_ph(pH,pH_limite_minimo, pH_limite_maximo):
+    if pH > pH_limite_minimo:
+        return "Reprovado", f"O pH está acima do limite permitido{pH_limite_minimo}."
+    elif pH < pH_limite_maximo:
+        return "Reprovado", f"O pH está abaixo do limite permitido{pH_limite_maximo}."
+    else:
+        return "Aprovado", f"O pH está dentro do limite permitido."
+
+#Função de validação turbidez
+def validar_turbidez(turbidez,turbidez_limite_maximo):
+    if turbidez > turbidez_limite_maximo:
+        return "Reprovado", f"A turbidez está acima do limite permitido{turbidez_limite_maximo}."
+    else:
+        return "Aprovado", f"A turbidez está dentro do limite permitido."   
+
+#Função de validação coliformes
+def validar_coliformes(presenca):
+    if presenca == True:
+        return "Reprovado", f"A presença de coliformes totais indica contaminação."
+    else:
+        return "Aprovado", f"A presença de coliformes totais indica ausência de contaminação."    
+
+#Função de avaliação geral dos laudos
+def avaliar_laudos(numero,pH,turbidez,coliformes,validar_ph,validar_turbidez,validar_coliformes):
+    status_ph, motivo_ph = validar_ph(pH)
+    status_turbidez, motivo_turbidez = validar_turbidez(turbidez)
+    status_coliformes, motivo_coliformes = validar_coliformes(coliformes) 
+
+    #Retorna o status geral dos laudos
+    if status_ph == "Reprovado" and status_turbidez == "Reprovado" and status_coliformes == "Reprovado":
+        status = "Reprovado"
+    else:
+        status = "Aprovado"
+
+    print(f"\nLaudos: {numero}")
+    print(f"PH: {ph} {status_ph} {motivo_ph}")
+    print(f"Turbidez: {turbidez} {status_turbidez} {motivo_turbidez}")
+    print(f"Coliformes: {coliformes} {status_coliformes} {motivo_coliformes}")
+
+    return status_geral
 
 laudos =[
-    {"Numero": "LAB-2025-00325", "pH": 6.5, "Turbidez":75, "Coliformes Totais": True},
-    {"Numero": "LAB-2025-00326", "pH": 7.5, "Turbidez":80, "Coliformes Totais": False},
-    {"Numero": "LAB-2025-00327", "pH": 8.5, "Turbidez":101, "Coliformes Totais": True},
-    {"Numero": "LAB-2025-00328", "pH": 9.5, "Turbidez":120, "Coliformes Totais": False},
-    {"Numero": "LAB-2025-00329", "pH": 4.2, "Turbidez":125, "Coliformes Totais": True},
-    {"Numero": "LAB-2025-00330", "pH": 6.5, "Turbidez":75, "Coliformes Totais": True}, 
+    {"numero": "LAB-2025-00325", "pH": 6.5, "Turbidez":75, "Coliformes": True},
+    {"numero": "LAB-2025-00326", "pH": 7.5, "Turbidez":80, "Coliformes": False},
+    {"numero": "LAB-2025-00327", "pH": 8.5, "Turbidez":101, "Coliformes": True},
+    {"numero": "LAB-2025-00328", "pH": 9.5, "Turbidez":120, "Coliformes": False},
+    {"numero": "LAB-2025-00329", "pH": 4.2, "Turbidez":125, "Coliformes": True},
+    {"numero": "LAB-2025-00330", "pH": 6.5, "Turbidez":75, "Coliformes": True}, 
 ]
-
-print(len(laudos))
 
 #limites
 pH_limite_minimo = 6.5
@@ -17,25 +57,33 @@ pH_limite_maximo = 8.5
 
 turbidez_limite_maximo = 100
 
-#Função de validação pH
-def validar_parametro_ph(pH,pH_limite_minimo, pH_limite_maximo):
-    if pH > pH_limite_minimo:
-        return "Reprovado", f"O pH do laudo {laudo.Numero} está acima do limite permitido{pH_limite_minimo}."
-    elif ph < pH_limite_maximo:
-        return "Reprovado", f"O pH do laudo {laudo.Numero} está abaixo do limite permitido{pH_limite_maximo}."
-    else:
-        return "Aprovado", f"O pH do laudo {laudo.Numero} está dentro do limite permitido."
+aprovados = 0
+reprovados = 0
 
-#Função de validação turbidez
-def validar_parametro_turbidez(turbidez,turbidez_limite_maximo):
-    if turbidez > turbidez_limite_maximo:
-        return "Reprovado", f"A turbidez do laudo {laudo.Numero} está acima do limite permitido{turbidez_limite_maximo}."
+#Imprime todos os laudos
+for laudo in laudos: 
+    resultado = avaliar_laudos(
+        laudo['pH'],
+        laudo['Turbidez'],
+        laudo['Coliformes'],
+    )
+    if resultado == "Aprovado":
+        aprovados += 1
     else:
-        return "Aprovado", f"A turbidez do laudo {laudo.Numero} está dentro do limite permitido."   
+        reprovados += 1
 
-#Função de validação coliformes
-def validar_parametro_coliformes(presenca):
-    if presenca == True:
-        return "Reprovado", f"A presença de coliformes totais indica contaminação."
-    else:
-        return "Aprovado", f"A presença de coliformes totais indica ausência de contaminação."    
+#Imprime o total de laudos aprovados e reprovados
+
+total = len(laudos)
+
+def resumo_executivo(total,aprovados,reprovados):
+    print("===============================================================")
+    print(f"Total de laudos: {total}")
+    print(f"Laudos Aprovados: {aprovados}")
+    print(f"Laudos Reprovados: {reprovados}")
+    print(f"Porcentagem de Aprovados: {aprovados/total*100:.2f}%")
+    print(f"Porcentagem de Reprovados: {reprovados/total*100:.2f}%")
+    print("===============================================================")
+
+resumo_executivo(total,aprovados,reprovados)   
+
